@@ -1,4 +1,4 @@
-name: ipfs
+name: Build and Deploy
 on: [push]
 jobs:
   build-and-deploy:
@@ -6,8 +6,6 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
-        with:
-          persist-credentials: false
 
       - name: Init
         run: |
@@ -19,6 +17,8 @@ jobs:
           npm i
           npm run build
           
-      - name: Upload 
-        run: |
-          npx ipfs-deploy ./build  
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: build
