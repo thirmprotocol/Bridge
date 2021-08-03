@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import {
   Avatar,
   CircularProgress,
@@ -19,15 +18,15 @@ import Button from "@material-ui/core/Button";
 import { KeyboardArrowLeft, TrendingFlat } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
 import { useWeb3React } from "@web3-react/core";
-import { formatEther, parseEther } from "ethers/lib/utils";
+import { formatEther } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import QRCode from "react-qr-code";
 import { useRecoilState } from "recoil";
+import LoadingImage from "../../assets/images/loading.gif";
 import { useMappingContract, useThirmContract } from "../../hooks";
 import { formatAddress } from "../../utils";
-import config from "./../../utils/config/index";
-import { getThirmTokenContract } from "./../../utils/index";
+
 import {
   addressState,
   assetState,
@@ -42,6 +41,7 @@ import {
   StyledListItem,
 } from "./../globalStyle";
 import { DepositWrapper } from "./style";
+import { LoadingWrapper } from "./../globalStyle";
 
 function Deposit() {
   const [address, setAddress] = useRecoilState(addressState);
@@ -55,8 +55,6 @@ function Deposit() {
   const [tokensList] = useRecoilState(tokensListState);
 
   const [thirmBal, setThirmBal] = useRecoilState(thirmBalState);
-
-  const [burnBal, setBurnBal] = useState("0");
 
   const mappingContract = useMappingContract();
 
@@ -79,12 +77,6 @@ function Deposit() {
       if (!stale) {
         setThirmBal(tokenBal);
       }
-
-      const toBurnEth = formatEther(await mappingContract.getBurnAmount());
-
-      if (!stale) {
-        setBurnBal(toBurnEth);
-      }
     };
     getTokensList();
     return () => {
@@ -106,17 +98,7 @@ function Deposit() {
         if (mappedAddress !== "0x0000000000000000000000000000000000000000") {
           setCurrentStep(4);
         } else {
-          const tokenAllowance = await thirmContract.allowance(
-            account,
-            config.MAPPING_CONTRACT_ADDRESS
-          );
-          const bal = await thirmContract.balanceOf(account);
-          const toBurnAllowance = parseEther((burnBal * 10).toString());
-          if (!tokenAllowance.eq(0) && bal.gte(toBurnAllowance)) {
-            setCurrentStep(3);
-          } else {
-            setCurrentStep(2);
-          }
+          setCurrentStep(2);
         }
       } catch (e) {
         console.log(e);
@@ -148,63 +130,11 @@ function Deposit() {
     });
   };
 
-  const approveThirm = async () => {
-    if (processingIndicator) return;
-
-    try {
-      const tokenContract = getThirmTokenContract(
-        library,
-        account,
-        config.THIRM_TOKEN_ADDRESS
-      );
-      const allowance = await thirmContract.allowance(
-        account,
-        config.MAPPING_CONTRACT_ADDRESS
-      );
-      const bal = await thirmContract.balanceOf(account);
-      const toBurnAllowance = parseEther((burnBal * 10).toString());
-
-      if (!allowance.eq(0) && bal.gte(toBurnAllowance)) {
-        setCurrentStep(3);
-        return;
-      }
-
-      const approved = await tokenContract.approve(
-        config.MAPPING_CONTRACT_ADDRESS,
-        toBurnAllowance
-      );
-
-      setProcessingIndicator(true);
-      library.once(approved.hash, (done) => {
-        if (done.status === 1) {
-          setCurrentStep(3);
-          setSnackBar({
-            status: true,
-            type: "success",
-            message: `THIRM approval completed.`,
-          });
-        } else {
-          setSnackBar({
-            status: true,
-            type: "error",
-            message: `THIRM approval failed.`,
-          });
-        }
-
-        setProcessingIndicator(false);
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const mapCoin = async () => {
     if (processingIndicator) return;
     const addressToMap = address.trim();
     try {
-      const withdrawed = await mappingContract.setAddressMap(addressToMap, {
-        gasLimit: 500000,
-      });
+      const withdrawed = await mappingContract.setAddressMap(addressToMap);
 
       setProcessingIndicator(true);
       library.once(withdrawed.hash, (done) => {
@@ -230,7 +160,19 @@ function Deposit() {
   };
 
   if (Object.keys(tokensList).length === 0)
-    return <DepositWrapper></DepositWrapper>;
+    return (
+      <DepositWrapper>
+        <LoadingWrapper>
+          <Avatar
+            src={LoadingImage}
+            style={{
+              width: 64,
+              height: 64,
+            }}
+          />
+        </LoadingWrapper>
+      </DepositWrapper>
+    );
 
   return (
     <DepositWrapper>
@@ -291,7 +233,7 @@ function Deposit() {
                         <Grid
                           container
                           direction="row"
-                          justify="flex-start"
+                          justifyContent="flex-start"
                           alignItems="center"
                         >
                           <Avatar
@@ -389,44 +331,11 @@ function Deposit() {
           </StyledButton>
         </>
       )}
-
       {currentStep === 2 && (
         <>
           <div className="action-area">
-            <img
-              src="https://avatars0.githubusercontent.com/u/67930090?s=200&v=4"
-              alt="thirm"
-            />
-            <p>Approve THIRM</p>
-          </div>
-
-          <StyledButton
-            className={`next-button ${processingIndicator && "processing"}`}
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={approveThirm}
-          >
-            {processingIndicator && (
-              <>
-                <CircularProgress size={24} color="secondary" />
-                Approving..
-              </>
-            )}
-            {!processingIndicator && <>Approve THIRM</>}
-          </StyledButton>
-        </>
-      )}
-
-      {currentStep === 3 && (
-        <>
-          <div className="action-area">
-            <img src={tokensList[asset].icon} alt="thirm" />
+            <img src={tokensList[asset].icon} alt={asset} />
             <p>MAP MY {asset.toUpperCase()} ADDRESS</p>
-            <Alert severity="info">
-              {burnBal} THIRM will be burned for the address mapping. It is a
-              one time process to prevent spam.
-            </Alert>
           </div>
           <StyledButton
             className={`next-button ${processingIndicator && "processing"}`}
@@ -446,22 +355,22 @@ function Deposit() {
         </>
       )}
 
-      {currentStep === 4 && (
+      {currentStep === 3 && (
         <>
           <div className="action-area">
             <div className="qr-wrapper">
-              <QRCode value={tokensList[asset].main} size={230} />
+              <QRCode value={tokensList[asset].deposit} size={230} />
             </div>
             <div className="qr-wrapper-small">
-              <QRCode value={tokensList[asset].main} size={160} />
+              <QRCode value={tokensList[asset].deposit} size={160} />
             </div>
             <OutlinedInput
-              value={tokensList[asset].main}
+              value={tokensList[asset].deposit}
               id="outlined-adornment-address"
               fullWidth
             />
             <CopyToClipboard
-              text={tokensList[asset].main}
+              text={tokensList[asset].deposit}
               onCopy={() => {
                 setSnackBar({
                   status: true,

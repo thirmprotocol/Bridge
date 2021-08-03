@@ -1,23 +1,27 @@
-import { List, ListItem, Stepper } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import styled from 'styled-components';
-
+import { List, ListItem, Stepper } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import styled from "styled-components";
 
 export const bridgeTheme = {
   primaryColor: "#0652DD",
   secondaryColor: "#e74c3c",
-  darkBlue: "#30336b"
+  darkBlue: "#30336b",
 };
 
 export const StyledButton = styled(Button)`
   height: 60px;
   margin: 16px 0;
-  background-image: linear-gradient(to right, #0652DD 0%, #512DA8  51%, #673AB7  100%);
+  background-image: linear-gradient(
+    to right,
+    #0652dd 0%,
+    #512da8 51%,
+    #673ab7 100%
+  );
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
   background-size: 200% auto;
-  color: white;            
+  color: white;
   box-shadow: 0 0 20px #eee;
   border-radius: 6px;
   &:hover {
@@ -44,12 +48,15 @@ export const StyledButton = styled(Button)`
   }
 
   &.processing {
-    background-color: #FF3CAC;
-    background-image: linear-gradient(225deg, #FF3CAC 0%, #784BA0 50%, #2B86C5 100%);
+    background-color: #ff3cac;
+    background-image: linear-gradient(
+      225deg,
+      #ff3cac 0%,
+      #784ba0 50%,
+      #2b86c5 100%
+    );
   }
-
 `;
-
 
 export const StyledListItem = styled(ListItem)`
   margin: 8px 0;
@@ -58,7 +65,7 @@ export const StyledListItem = styled(ListItem)`
     @media screen and (max-width: 325px) {
       font-size: 0.75rem;
     }
-    @media screen and (max-width: 375px) and (min-width: 325px){
+    @media screen and (max-width: 375px) and (min-width: 325px) {
       font-size: 0.9rem;
     }
   }
@@ -68,7 +75,7 @@ export const StyledList = styled(List)`
   margin: 24px 0;
   background: #f1f1f1;
   background: -webkit-linear-gradient(to right, #eef2f3, #f1f1f1);
-  background: linear-gradient(to right, #eef2f3, #f1f1f1); 
+  background: linear-gradient(to right, #eef2f3, #f1f1f1);
   border: 1px solid #e3e3e3;
   padding: 8px 0;
   border-radius: 5px;
@@ -77,7 +84,7 @@ export const StyledList = styled(List)`
 export const StyledInputArea = styled.div`
   margin: 24px 0;
   .MuiButton-label {
-    color: ${bridgeTheme.primaryColor}
+    color: ${bridgeTheme.primaryColor};
   }
 `;
 
@@ -123,7 +130,7 @@ export const MainContentWrapper = styled.div`
     align-items: center;
     justify-content: center;
     height: 320px;
-    
+
     img {
       width: 120px;
       height: 120px;
@@ -174,7 +181,6 @@ export const MainContentWrapper = styled.div`
       letter-spacing: 0.02em;
     }
   }
-  
 `;
 
 export const GoBackButton = styled(Button)`
@@ -193,4 +199,13 @@ export const StyledStepper = styled(Stepper)`
   button {
     margin: 36px 0 24px 0;
   }
+`;
+
+export const LoadingWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  margin: auto;
 `;

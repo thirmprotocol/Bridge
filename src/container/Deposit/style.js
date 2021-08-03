@@ -1,8 +1,8 @@
-import styled from 'styled-components';
-
+import styled from "styled-components";
 
 export const DepositWrapper = styled.div`
   position: relative;
+  overflow: hidden;
   min-height: 470px;
   padding: 0;
   .next-button {

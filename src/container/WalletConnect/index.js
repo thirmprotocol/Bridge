@@ -51,13 +51,7 @@ const ConnectWallet = (props) => {
             );
           })}
         <div className="error-message">
-          {!!error && (
-            <Alert severity="error">
-              <div
-                dangerouslySetInnerHTML={{ __html: getErrorMessage(error) }}
-              />
-            </Alert>
-          )}
+          {!!error && <Alert severity="error">{getErrorMessage(error)}</Alert>}
         </div>
       </ConnectWrapper>
     </Grid>

@@ -1,13 +1,14 @@
-import { CircularProgress } from '@material-ui/core';
-import { useWeb3React } from '@web3-react/core';
-import React, { useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import { injected } from '../../hooks/connectors';
-import { useEagerConnect, useInactiveListener } from '../../hooks/index';
-import ConnectWallet from '../WalletConnect/index';
+import { useWeb3React } from "@web3-react/core";
+import React, { useEffect, useState } from "react";
+import { Route, Switch } from "react-router-dom";
+import { injected } from "../../hooks/connectors";
+import { useEagerConnect, useInactiveListener } from "../../hooks/index";
+import ConnectWallet from "../WalletConnect/index";
+import { LoadingWrapper } from "./../globalStyle";
+import { Avatar } from "@material-ui/core";
+import LoadingImage from "../../assets/images/loading.gif";
 
 function Web3Wrapper({ children }) {
-
   const { connector, activate, active, chainId } = useWeb3React();
 
   // state for connectot activation
@@ -23,8 +24,6 @@ function Web3Wrapper({ children }) {
         }
       }, 600);
     }
-
-
   }, [activatingConnector, active, connector, setActivatingConnector]);
 
   // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
@@ -38,14 +37,34 @@ function Web3Wrapper({ children }) {
   }
 
   if (activatingConnector) {
-    return <CircularProgress style={{ margin: "auto" }} />;
+    return (
+      <LoadingWrapper>
+        <Avatar
+          src={LoadingImage}
+          style={{
+            width: 64,
+            height: 64,
+          }}
+        />
+      </LoadingWrapper>
+    );
   }
 
   return (
     <Switch>
-      <Route exact path="/" component={() => <ConnectWallet connectorsByName={{
-        Injected: injected,
-      }} activate={activate} setActivatingConnector={setActivatingConnector} />} />
+      <Route
+        exact
+        path="/"
+        component={() => (
+          <ConnectWallet
+            connectorsByName={{
+              Injected: injected,
+            }}
+            activate={activate}
+            setActivatingConnector={setActivatingConnector}
+          />
+        )}
+      />
     </Switch>
   );
 }

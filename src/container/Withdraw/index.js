@@ -22,6 +22,7 @@ import { ethers } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
+import LoadingImage from "../../assets/images/loading.gif";
 import checkIcon from "../../assets/images/check.png";
 import errorIcon from "../../assets/images/error.png";
 import { useControllerContract } from "./../../hooks/index";
@@ -42,6 +43,7 @@ import {
   StyledListItem,
 } from "./../globalStyle";
 import { WithdrawWrapper } from "./style";
+import { LoadingWrapper } from "./../globalStyle";
 
 const ALLOWANCE_LIMIT = ethers.BigNumber.from(
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
@@ -141,10 +143,7 @@ function Withdraw() {
       const withdrawed = await controllerContract.registerWithdrawal(
         asset.toUpperCase(),
         addressToMap,
-        tknAmount,
-        {
-          gasLimit: 500000,
-        }
+        tknAmount
       );
 
       setProcessingIndicator(true);
@@ -252,7 +251,19 @@ function Withdraw() {
   };
 
   if (Object.keys(tokensList).length === 0)
-    return <WithdrawWrapper></WithdrawWrapper>;
+    return (
+      <WithdrawWrapper>
+        <LoadingWrapper>
+          <Avatar
+            src={LoadingImage}
+            style={{
+              width: 64,
+              height: 64,
+            }}
+          />
+        </LoadingWrapper>
+      </WithdrawWrapper>
+    );
 
   return (
     <WithdrawWrapper>
@@ -338,7 +349,7 @@ function Withdraw() {
                         <Grid
                           container
                           direction="row"
-                          justify="flex-start"
+                          justifyContent="flex-start"
                           alignItems="center"
                         >
                           <Avatar

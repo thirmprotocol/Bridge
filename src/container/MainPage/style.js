@@ -1,7 +1,6 @@
-import { AppBar, Card } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import styled from 'styled-components';
-
+import { AppBar, Card } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
+import styled from "styled-components";
 
 export const MainWrapper = styled.div`
   margin: auto 0px;
@@ -9,12 +8,12 @@ export const MainWrapper = styled.div`
 
 export const MainCard = styled(Card)`
   width: 100%;
-`
+`;
 
 export const MainAppBar = styled(AppBar)`
- background-image: linear-gradient(to right, #0652DD 30%, #d43f8d 100%);
+  background-image: linear-gradient(to right, #0652dd 30%, #d43f8d 100%);
   &.change {
-    background-image: linear-gradient(to left, #0652DD 30%, #d43f8d 100%);
+    background-image: linear-gradient(to left, #0652dd 30%, #d43f8d 100%);
   }
 
   .MuiTabs-flexContainer {
@@ -28,19 +27,13 @@ export const MainAppBar = styled(AppBar)`
 `;
 
 export const MainAlert = styled(Alert)`
-  margin: 24px 0;
+  margin: 16px 0;
   text-align: center;
-`
+`;
 
-export const ExternalLinks = styled.div`
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-padding: 16px 0;
-.MuiButton-label {
-  font-size: 12px;
-}
-  img {
-    width: 24px;
-  }
+export const External = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 16px 0;
 `;

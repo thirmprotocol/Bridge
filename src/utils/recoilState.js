@@ -25,6 +25,16 @@ export const tokenBalState = atom({
   default: "0.00000000",
 });
 
+export const ensListState = atom({
+  key: "ensList",
+  default: ["thirm.eth"],
+});
+
+export const ensState = atom({
+  key: "ens",
+  default: "thirm.eth",
+});
+
 export const tokensListState = atom({
   key: "tokensList",
   default: {},
