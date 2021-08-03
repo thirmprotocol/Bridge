@@ -12,11 +12,15 @@ jobs:
           sudo apt-get update -y 
           sudo apt install git -y
 
+      - name: Prepare
+        run: |
+          npm install -g yarn
+          rm -rf node_modules package-lock.json yarn.lock
+
       - name: Install
         run: |
-          rm -rf node_modules package-json.json
-          npm i
-          npm run build
+          yarn
+          yarn build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
