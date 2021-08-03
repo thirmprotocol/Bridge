@@ -9,14 +9,15 @@ jobs:
 
       - name: Init
         run: |
-         sudo apt-get update -y 
-         sudo apt install git -y
-     
-      - name: Install 
+          sudo apt-get update -y 
+          sudo apt install git -y
+
+      - name: Install
         run: |
+          rm -rf node_modules package.json.lock
           npm i
           npm run build
-          
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
