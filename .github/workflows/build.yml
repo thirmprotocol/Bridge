@@ -14,7 +14,7 @@ jobs:
 
       - name: Install
         run: |
-          rm -rf node_modules package.json.lock
+          rm -rf node_modules package-json.json
           npm i
           npm run build
 
