@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Avatar,
   Box,
   CardContent,
   Container,
