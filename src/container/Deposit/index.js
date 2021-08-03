@@ -25,11 +25,12 @@ import QRCode from "react-qr-code";
 import { useRecoilState } from "recoil";
 import LoadingImage from "../../assets/images/loading.gif";
 import { useMappingContract, useThirmContract } from "../../hooks";
-import { formatAddress } from "../../utils";
+import { formatAddress, getEnsList } from "../../utils";
 
 import {
   addressState,
   assetState,
+  ensListState,
   thirmBalState,
   tokensListState,
 } from "./../../utils/recoilState";
@@ -42,6 +43,10 @@ import {
 } from "./../globalStyle";
 import { DepositWrapper } from "./style";
 import { LoadingWrapper } from "./../globalStyle";
+import { ensState } from "./../../utils/recoilState";
+import HttpProvider from "ethjs-provider-http";
+import ENS, { getEnsAddress } from "@ensdomains/ensjs";
+import config from "./../../utils/config/index";
 
 function Deposit() {
   const [address, setAddress] = useRecoilState(addressState);
@@ -53,6 +58,10 @@ function Deposit() {
   const { account, library } = useWeb3React();
 
   const [tokensList] = useRecoilState(tokensListState);
+  const [depositAddress, setDepositAddress] = useState(null);
+
+  const [ens, setEns] = useRecoilState(ensState);
+  const [ensList, setEnsList] = useRecoilState(ensListState);
 
   const [thirmBal, setThirmBal] = useRecoilState(thirmBalState);
 
@@ -70,15 +79,17 @@ function Deposit() {
 
   useEffect(() => {
     let stale = false;
-    const getTokensList = async () => {
+    const loadData = async () => {
       const bal = await thirmContract.balanceOf(account);
       const tokenBal = formatEther(bal);
+      let ensListTemp = getEnsList();
 
       if (!stale) {
         setThirmBal(tokenBal);
+        setEnsList(ensListTemp);
       }
     };
-    getTokensList();
+    loadData();
     return () => {
       stale = true;
     };
@@ -87,18 +98,36 @@ function Deposit() {
   const handleChange = (prop) => (event) => {
     if (prop === "address") setAddress(event.target.value);
     if (prop === "asset") setAsset(event.target.value);
+    if (prop === "ens") setEns(event.target.value);
+  };
+
+  const updateDepositAddresses = async () => {
+    const provider = new HttpProvider(config.RPC_URL);
+    const ensLookup = new ENS({ provider, ensAddress: getEnsAddress("1") });
+
+    try {
+      const tokenAddress = await ensLookup
+        .name(ens)
+        .getAddress(asset.toUpperCase());
+
+      setDepositAddress(tokenAddress);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const onNext = async () => {
     if (!address) return;
     const addressToMap = address.trim();
-    if (currentStep === 1) {
+    if (currentStep === 2) {
+      await updateDepositAddresses();
+
       try {
         const mappedAddress = await mappingContract.getAddressMap(addressToMap);
         if (mappedAddress !== "0x0000000000000000000000000000000000000000") {
           setCurrentStep(4);
         } else {
-          setCurrentStep(2);
+          setCurrentStep(3);
         }
       } catch (e) {
         console.log(e);
@@ -334,6 +363,40 @@ function Deposit() {
       {currentStep === 2 && (
         <>
           <div className="action-area">
+            <FormControl variant="outlined">
+              <Select value={ens} onChange={handleChange("ens")}>
+                {ensList.map((ens) => (
+                  <MenuItem value={ens} key={ens}>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="center"
+                    >
+                      <Typography style={{ marginLeft: 24, marginRight: 24 }}>
+                        {ens.toUpperCase()}
+                      </Typography>
+                    </Grid>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          <StyledButton
+            className={`next-button ${processingIndicator && "processing"}`}
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={onNext}
+          >
+            Select ENS
+          </StyledButton>
+        </>
+      )}
+
+      {currentStep === 3 && (
+        <>
+          <div className="action-area">
             <img src={tokensList[asset].icon} alt={asset} />
             <p>MAP MY {asset.toUpperCase()} ADDRESS</p>
           </div>
@@ -355,22 +418,22 @@ function Deposit() {
         </>
       )}
 
-      {currentStep === 3 && (
+      {currentStep === 4 && (
         <>
           <div className="action-area">
             <div className="qr-wrapper">
-              <QRCode value={tokensList[asset].deposit} size={230} />
+              <QRCode value={depositAddress} size={230} />
             </div>
             <div className="qr-wrapper-small">
-              <QRCode value={tokensList[asset].deposit} size={160} />
+              <QRCode value={depositAddress} size={160} />
             </div>
             <OutlinedInput
-              value={tokensList[asset].deposit}
+              value={depositAddress}
               id="outlined-adornment-address"
               fullWidth
             />
             <CopyToClipboard
-              text={tokensList[asset].deposit}
+              text={depositAddress}
               onCopy={() => {
                 setSnackBar({
                   status: true,

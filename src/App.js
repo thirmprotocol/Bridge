@@ -1,5 +1,6 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/core";
+import { createTheme } from "@material-ui/core/styles";
 import { Web3ReactProvider } from "@web3-react/core";
 import { BrowserRouter as Router } from "react-router-dom";
 import { RecoilRoot } from "recoil";
@@ -11,7 +12,7 @@ function getLibrary(provider) {
   return library;
 }
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     fontFamily: "Kanit, Oxygen, Arial",
     fontSize: 15,

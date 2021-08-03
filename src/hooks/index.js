@@ -72,20 +72,20 @@ export function useInactiveListener(suppress = false) {
       };
 
       const handleNetworkChanged = (networkId) => {
-        console.log("networkChanged", networkId);
+        console.log("chainChanged", networkId);
         activate(injected);
       };
       ethereum.on("connect", handleConnect);
       ethereum.on("chainChanged", handleChainChanged);
       ethereum.on("accountsChanged", handleAccountsChanged);
-      ethereum.on("networkChanged", handleNetworkChanged);
+      ethereum.on("chainChanged", handleNetworkChanged);
 
       return () => {
         if (ethereum.removeListener) {
           ethereum.removeListener("connect", handleChainChanged);
           ethereum.removeListener("chainChanged", handleChainChanged);
           ethereum.removeListener("accountsChanged", handleAccountsChanged);
-          ethereum.removeListener("networkChanged", handleNetworkChanged);
+          ethereum.removeListener("chainChanged", handleNetworkChanged);
         }
       };
     }
@@ -162,30 +162,3 @@ export function useThirmContract() {
     }
   }, [library, account]);
 }
-
-export const getTokens = async (library) => {
-  try {
-    const resolver = await library.getResolver("thirm.eth");
-    const btcAddress = await resolver.getAddress(0);
-    const ltcAddress = await resolver.getAddress(2);
-    const dogeAddress = await resolver.getAddress(3);
-    const ttokens = {
-      btc: {
-        icon: "https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/1024/Bitcoin-BTC-icon.png",
-        contract: btcAddress,
-      },
-      ltc: {
-        icon: "https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/1024/Litecoin-LTC-icon.png",
-        contract: ltcAddress,
-      },
-      doge: {
-        icon: "https://cdn.iconscout.com/icon/free/png-512/dogecoin-441958.png",
-        contract: dogeAddress,
-      },
-    };
-
-    return ttokens;
-  } catch (e) {
-    return {};
-  }
-};

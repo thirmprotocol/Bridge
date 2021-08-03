@@ -1,32 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Box,
-  CardContent,
-  Container,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  Tab,
-  Tabs,
-  Typography,
-} from "@material-ui/core";
+import { Box, CardContent, Container, Tab, Tabs } from "@material-ui/core";
 import React, { useEffect } from "react";
 import Deposit from "./../Deposit/index";
 import Withdraw from "./../Withdraw/index";
-import {
-  External,
-  MainAlert,
-  MainAppBar,
-  MainCard,
-  MainWrapper,
-} from "./style";
+import { MainAlert, MainAppBar, MainCard, MainWrapper } from "./style";
 
 import { useRecoilState } from "recoil";
-import { ensListState, tokensListState } from "../../utils/recoilState";
-import { getEnsList, getTokens } from "../../utils";
 import { useWeb3React } from "@web3-react/core";
-import { ensState } from "./../../utils/recoilState";
+import { tokensListState } from "../../utils/recoilState";
+import { getTokens } from "./../../utils/index";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,67 +28,44 @@ function TabPanel(props) {
 
 function MainPage() {
   const { library } = useWeb3React();
-  const [value, setValue] = React.useState(0);
+  const [tabValue, setTabValue] = React.useState(0);
 
-  const [ens, setEns] = useRecoilState(ensState);
   const [, setTokensList] = useRecoilState(tokensListState);
-  const [ensList, setEnsList] = useRecoilState(ensListState);
 
   useEffect(() => {
     let stale = false;
-    const loadData = async () => {
-      let tokensListTemp = await getTokens(library, ens);
-      let ensListTemp = getEnsList();
+    const loadData = () => {
+      const tokensListTemp = getTokens();
+      console.log(tokensListTemp);
       if (!stale) {
         setTokensList(tokensListTemp);
-        setEnsList(ensListTemp);
       }
     };
     loadData();
     return () => {
       stale = true;
     };
-  }, [library, ens]);
+  }, [library]);
 
   const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleChange = (prop) => (event) => {
-    if (prop === "ens") setEns(event.target.value);
+    setTabValue(newValue);
   };
 
   return (
     <MainWrapper>
       <Container maxWidth="xs">
-        <External>
-          <FormControl variant="outlined">
-            <Select value={ens} onChange={handleChange("ens")}>
-              {ensList.map((ens) => (
-                <MenuItem value={ens} key={ens}>
-                  <Grid
-                    container
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="center"
-                  >
-                    <Typography style={{ marginLeft: 8, marginRight: 8 }}>
-                      {ens.toUpperCase()}
-                    </Typography>
-                  </Grid>
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </External>
+        <MainAlert icon={false} severity="success" variant="outlined">
+          ThirmVM is currently work in progress. Please don’t use assets you
+          can’t afford to lose.
+        </MainAlert>
         <MainCard elevation={5}>
           <MainAppBar
             position="static"
             elevation={0}
-            className={value === 1 && "change"}
+            className={tabValue === 1 && "change"}
           >
             <Tabs
-              value={value}
+              value={tabValue}
               indicatorColor="primary"
               onChange={handleTabChange}
               aria-label="THIRM function"
@@ -118,18 +77,14 @@ function MainPage() {
             </Tabs>
           </MainAppBar>
           <CardContent>
-            <TabPanel value={value} index={0}>
+            <TabPanel value={tabValue} index={0}>
               <Deposit />
             </TabPanel>
-            <TabPanel value={value} index={1}>
+            <TabPanel value={tabValue} index={1}>
               <Withdraw />
             </TabPanel>
           </CardContent>
         </MainCard>
-        <MainAlert icon={false} severity="success" variant="outlined">
-          ThirmVM is currently work in progress. Please don’t use assets you
-          can’t afford to lose.
-        </MainAlert>
       </Container>
     </MainWrapper>
   );
