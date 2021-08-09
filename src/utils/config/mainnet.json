@@ -4,5 +4,15 @@
 	"THIRM_TOKEN_ADDRESS": "0xb526FD41360c98929006f3bDcBd16d55dE4b0069",
 	"RPC_URL": "https://mainnet.infura.io/v3/57ab41c0fb3b4c1e871eaff0a8f097b3",
 	"network": "Mainnet",
-	"chainID": 1
+	"chainID": 1,
+	"assets": [
+		"btc",
+		"nano",
+		"doge",
+		"ltc",
+		"bch"
+	],
+	"ens": [
+		"thirm.eth"
+	]
 }
