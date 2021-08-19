@@ -140,7 +140,7 @@ function Withdraw() {
     const addressToMap = address.trim();
     try {
       const tknAmount = parseEther(amount.trim());
-      const withdrawed = await controllerContract.registerWithdrawal(
+      const withdrawed = await controllerContract.registerWithdraw(
         asset.toUpperCase(),
         addressToMap,
         tknAmount
@@ -449,7 +449,7 @@ function Withdraw() {
         <>
           <div className="action-area">
             <img src={tokensList[asset].icon} alt={asset.toUpperCase()} />
-            <p>Approve {asset.toUpperCase()}</p>
+            <p>Approve t{asset.toUpperCase()}</p>
           </div>
 
           <StyledButton
@@ -465,7 +465,7 @@ function Withdraw() {
                 Approving..
               </>
             )}
-            {!processingIndicator && <>Approve {asset.toUpperCase()}</>}
+            {!processingIndicator && <>Approve t{asset.toUpperCase()}</>}
           </StyledButton>
         </>
       )}

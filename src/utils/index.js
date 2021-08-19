@@ -20,10 +20,11 @@ export const formatAddress = (address) => {
 export const getTokens = () => {
   const assets = config.assets;
   const ttokens = {};
+  // TODO: Add tTokens address
   assets.forEach((a) => {
     ttokens[a] = {
       icon: `https://raw.githubusercontent.com/thirmprotocol/API/master/icons/${a}.png`,
-      contract: "0x0000000000000000000000000000000000000000",
+      contract: "0xb526FD41360c98929006f3bDcBd16d55dE4b0069",
     };
   });
   return ttokens;

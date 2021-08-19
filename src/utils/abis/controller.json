@@ -1,35 +1,8 @@
 [
     {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "_from",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "_to",
-                "type": "address"
-            }
-        ],
-        "name": "OwnershipTransferred",
-        "type": "event"
-    },
-    {
         "inputs": [],
-        "name": "comissionFee",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
+        "stateMutability": "nonpayable",
+        "type": "constructor"
     },
     {
         "inputs": [],
@@ -52,6 +25,19 @@
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -85,22 +71,9 @@
                 "type": "uint256"
             }
         ],
-        "name": "mintCoin",
+        "name": "registerDeposit",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "internalType": "address payable",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -121,14 +94,8 @@
                 "type": "uint256"
             }
         ],
-        "name": "registerWithdrawal",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "arrayLength",
-                "type": "uint256"
-            }
-        ],
+        "name": "registerWithdraw",
+        "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -145,38 +112,7 @@
                 "type": "string"
             }
         ],
-        "name": "registerWithdrawalSuccess",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "setComissionFee",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "_coin",
-                "type": "string"
-            },
-            {
-                "internalType": "address",
-                "name": "_token",
-                "type": "address"
-            }
-        ],
-        "name": "tTokenInit",
+        "name": "registerWithdrawSuccess",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -208,25 +144,6 @@
                 "type": "string"
             }
         ],
-        "name": "tokens",
-        "outputs": [
-            {
-                "internalType": "contract ERC20",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
         "name": "transactionsProceeded",
         "outputs": [
             {
@@ -241,7 +158,7 @@
     {
         "inputs": [
             {
-                "internalType": "address payable",
+                "internalType": "address",
                 "name": "_newOwner",
                 "type": "address"
             }
